@@ -48,7 +48,7 @@
         <VersionPrefix Condition=" '$(VersionPrefix)' == '' ">0.1.0</VersionPrefix>
 
         <VersionSuffix Condition=" '$(IsTag)' != 'true' ">pre</VersionSuffix>
-        <VersionSuffix Condition=" '$(IsTag)' != 'true' AND $(GITHUB_RUN_ID) != '' ">$(VersionSuffix).$(GITHUB_RUN_ID)</VersionSuffix>
+        <VersionSuffix Condition=" '$(IsTag)' != 'true' AND $(GITHUB_RUN_NUMBER) != '' ">$(VersionSuffix).$(GITHUB_RUN_NUMBER)</VersionSuffix>
 
         <PackageReleaseNotes Condition=" '$(Version)' != '' ">https://github.com/AlienArc/serilog-sinks-prism/releases/tag/v$(Version)</PackageReleaseNotes>
 
