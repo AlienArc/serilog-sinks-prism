@@ -20,23 +20,22 @@ jobs:
       with:
         dotnet-version: 5.0.x
 
-    - name: Get Branch/Tag name
-      id: branch_name
-      run: |
-        echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
-        echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
-        echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
+    - name: Branch Names
+      id: branch-name
+      uses: tj-actions/branch-names@v5
+      with:
+        strip_tag_prefix: "v"
 
     - name: Set Build Environment
+      env:
+        SOURCE_PR_BRANCH: ${{ steps.branch_name.outputs.head_ref_branch }}
+        SOURCE_BRANCH: ${{ steps.branch_name.outputs.current_branch }}
+        SOURCE_TAG: ${{ steps.branch_name.outputs.tag }}
+        CONFIGURATION: "Release"
       run: |
-        echo SOURCE_NAME=$SOURCE_NAME
+        echo SOURCE_PR_BRANCH=$SOURCE_PR_BRANCH
         echo SOURCE_BRANCH=$SOURCE_BRANCH
         echo SOURCE_TAG=$SOURCE_TAG
-      env:
-        SOURCE_NAME: ${{ steps.branch_name.outputs.SOURCE_NAME }}
-        SOURCE_BRANCH: ${{ steps.branch_name.outputs.SOURCE_BRANCH }}
-        SOURCE_TAG: ${{ steps.branch_name.outputs.SOURCE_TAG }}
-        CONFIGURATION: "Release"
 
     - name: Restore dependencies
       run: dotnet restore
