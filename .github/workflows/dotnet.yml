@@ -26,16 +26,12 @@ jobs:
       with:
         strip_tag_prefix: "v"
 
-    - name: Set Build Environment
-      env:
-        SOURCE_PR_BRANCH: ${{ steps.branch_name.outputs.head_ref_branch }}
-        SOURCE_BRANCH: ${{ steps.branch_name.outputs.current_branch }}
-        SOURCE_TAG: ${{ steps.branch_name.outputs.tag }}
-        CONFIGURATION: "Release"
+    - name: Set Build Environment        
       run: |
-        echo SOURCE_PR_BRANCH=$SOURCE_PR_BRANCH
-        echo SOURCE_BRANCH=$SOURCE_BRANCH
-        echo SOURCE_TAG=$SOURCE_TAG
+        echo "SOURCE_PR_BRANCH=${{ steps.branch_name.outputs.head_ref_branch }}" >> $GITHUB_ENV
+        echo "SOURCE_BRANCH=${{ steps.branch_name.outputs.current_branch }}" >> $GITHUB_ENV
+        echo "SOURCE_TAG=${{ steps.branch_name.outputs.tag }}" >> $GITHUB_ENV
+        echo "CONFIGURATION=Release" >> $GITHUB_ENV        
 
     - name: Restore dependencies
       run: dotnet restore
