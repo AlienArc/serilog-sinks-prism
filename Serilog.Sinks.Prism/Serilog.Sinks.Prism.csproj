@@ -1,7 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+	  <TargetFramework>netstandard2.0</TargetFramework>
+	  <RootNamespace>Serilog.Sinks.Prism</RootNamespace>
+	  <AssemblyName>Serilog.Sinks.Prism</AssemblyName>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
