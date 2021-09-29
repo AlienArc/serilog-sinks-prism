@@ -1,0 +1,69 @@
+<Project>
+
+    <PropertyGroup>
+        <Product>$(AssemblyName)</Product>
+        <NeutralLanguage>en</NeutralLanguage>
+        <Authors>Duane Newman</Authors>
+        <Owners>Duane Newman</Owners>
+        <Copyright>Alien Arc Technologies, LLC</Copyright>
+        <!-- <PackageIcon>icon.png</PackageIcon> -->
+        <PackageProjectUrl>https://github.com/AlienArc/serilog-sinks-prism</PackageProjectUrl>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/AlienArc/serilog-sinks-prism</RepositoryUrl>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <IncludeSymbols>True</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <IncludeSource>True</IncludeSource>
+        <DelaySign>False</DelaySign>
+
+        <IsTestProject>$(MSBuildProjectName.EndsWith('.Tests'))</IsTestProject>
+        
+        <IsPackable>!$(IsTestProject)</IsPackable>
+
+        <PackageTags>serilog;prism;logging;eventaggregator</PackageTags>
+
+        <PackageReleaseNotes Condition=" '$(APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED)' != '' And '$(PackageReleaseNotes)' == '' ">$(APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED)</PackageReleaseNotes>
+
+    </PropertyGroup>
+
+    <PropertyGroup>
+
+        <SourceRevisionId Condition=" '$(SourceRevisionId)' == '' And '$(APPVEYOR_REPO_COMMIT)' != '' ">$(APPVEYOR_REPO_COMMIT)</SourceRevisionId>
+        <SourceRevisionId Condition=" '$(SourceRevisionId)' == '' And '$(GITHUB_SHA)' != '' ">$(GITHUB_SHA)</SourceRevisionId>
+
+        <CiVersion Condition=" '$(APPVEYOR_BUILD_VERSION)' != ''">$(APPVEYOR_BUILD_VERSION)</CiVersion>
+
+        <Version Condition=" '$(CiVersion)' != ''">$(CiVersion)</Version>
+
+        <VersionPrefix Condition=" '$(CiVersion)' == '' ">0.1.0</VersionPrefix>
+
+        <PackageReleaseNotes Condition=" '$(Version)' != '' ">https://github.com/AlienArc/serilog-sinks-prism/releases/tag/v$(Version)</PackageReleaseNotes>
+
+    </PropertyGroup>
+
+    <ItemGroup Condition=" $(IsPackable) ">
+        <!-- <None Include="$(MSBuildThisFileDirectory)logos/$(PackageIcon)"
+            Visible="False"
+            Pack="True"
+            PackagePath="" /> -->
+        <None Include="$(MSBuildThisFileDirectory)$(PackageLicenseFile)"
+            Visible="False"
+            Pack="True"
+            PackagePath="" />
+    </ItemGroup>
+    
+    <PropertyGroup Condition="'$(CI)' == 'True'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <SourceLinkCreate>true</SourceLinkCreate>
+        <DeterministicSourcePaths>true</DeterministicSourcePaths>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+    </ItemGroup>
+
+</Project>
