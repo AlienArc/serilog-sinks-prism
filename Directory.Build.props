@@ -27,6 +27,10 @@
 
         <PackageReleaseNotes Condition=" '$(APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED)' != '' And '$(PackageReleaseNotes)' == '' ">$(APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED)</PackageReleaseNotes>
 
+        <ArtifactStagingRoot>$(MSBuildThisFileDirectory)Artifacts</ArtifactStagingRoot>
+        <ArtifactStagingRoot Condition=" '$(BUILD_ARTIFACTSTAGINGDIRECTORY)' != '' ">$(BUILD_ARTIFACTSTAGINGDIRECTORY)</ArtifactStagingRoot>
+        <PackageOutputPath>$([System.IO.Path]::Combine('$(ArtifactStagingRoot)', 'NuGet'))</PackageOutputPath>
+
     </PropertyGroup>
 
     <PropertyGroup>
@@ -34,11 +38,17 @@
         <SourceRevisionId Condition=" '$(SourceRevisionId)' == '' And '$(APPVEYOR_REPO_COMMIT)' != '' ">$(APPVEYOR_REPO_COMMIT)</SourceRevisionId>
         <SourceRevisionId Condition=" '$(SourceRevisionId)' == '' And '$(GITHUB_SHA)' != '' ">$(GITHUB_SHA)</SourceRevisionId>
 
+        <IsTag>false</IsTag>
+        <IsTag Condition=" '$(SOURCE_TAG)' != ''">true</IsTag>        
+        
         <CiVersion Condition=" '$(APPVEYOR_BUILD_VERSION)' != ''">$(APPVEYOR_BUILD_VERSION)</CiVersion>
+        <CiVersion Condition=" '$(IsTag)' == 'true' ">$(SOURCE_TAG)</CiVersion>
 
-        <Version Condition=" '$(CiVersion)' != ''">$(CiVersion)</Version>
+        <VersionPrefix Condition=" '$(CiVersion)' != '' ">$(CiVersion)</VersionPrefix>
+        <VersionPrefix Condition=" '$(VersionPrefix)' == '' ">0.1.0</VersionPrefix>
 
-        <VersionPrefix Condition=" '$(CiVersion)' == '' ">0.1.0</VersionPrefix>
+        <VersionSuffix Condition=" '$(IsTag)' != 'true' ">pre</VersionSuffix>
+        <VersionSuffix Condition=" '$(IsTag)' != 'true' AND $(GITHUB_RUN_ID) != '' ">$(VersionSuffix).$(GITHUB_RUN_ID)</VersionSuffix>
 
         <PackageReleaseNotes Condition=" '$(Version)' != '' ">https://github.com/AlienArc/serilog-sinks-prism/releases/tag/v$(Version)</PackageReleaseNotes>
 

@@ -5,6 +5,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  tags:
+    - '*'
 
 jobs:
   build:
@@ -17,6 +19,24 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
+
+    - name: Get Branch/Tag name
+      id: branch_name
+      run: |
+        echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
+        echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
+        echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
+
+    - name: Build base image
+      run: |
+        echo $SOURCE_NAME
+        echo $SOURCE_BRANCH
+        echo $SOURCE_TAG
+      env:
+        SOURCE_NAME: ${{ steps.branch_name.outputs.SOURCE_NAME }}
+        SOURCE_BRANCH: ${{ steps.branch_name.outputs.SOURCE_BRANCH }}
+        SOURCE_TAG: ${{ steps.branch_name.outputs.SOURCE_TAG }}
+
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -27,6 +47,6 @@ jobs:
       uses: actions/upload-artifact@v2.2.4
       with:
         # name: # optional, default is artifact
-        path: "**/*.*nupkg"
+        path: "Artifacts/NuGet/*nupkg"
         if-no-files-found: warn # warn,error,ignore
         retention-days: 0 # optional
